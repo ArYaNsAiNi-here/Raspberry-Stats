@@ -1,14 +1,9 @@
-# monitor/views.py
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone
 import psutil
 
 def get_cpu_temperature():
-    """
-    Read the CPU temperature directly from the system file.
-    Returns the temperature in degrees Celsius, or None on error.
-    """
     try:
         with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
             # Temperature is provided in millidegrees Celsius. Convert to degrees.
@@ -18,11 +13,9 @@ def get_cpu_temperature():
         return None
 
 def index(request):
-    """Render the monitoring dashboard."""
     return render(request, 'monitor/index.html')
 
 def system_stats(request):
-    """Return Raspberry Pi system statistics as JSON."""
     cpu_temp = get_cpu_temperature()
     data = {
         'cpu_temp': f"{cpu_temp:.2f}" if cpu_temp is not None else "N/A",
