@@ -1,0 +1,64 @@
+body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    /* Container styling with drop-in animation */
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: dropIn 0.8s ease-out both;
+    }
+    /* Header title styling */
+    .container h1 {
+      margin-bottom: 20px;
+      font-size: 2em;
+      color: #333;
+    }
+    /* Individual statistic styling */
+    .stat {
+      font-size: 1.5em;
+      margin: 15px 0;
+      position: relative;
+    }
+    /* Style for each stat value */
+    .stat span.value {
+      font-weight: bold;
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      transition: background-color 0.5s ease-in-out;
+    }
+    /* Keyframes for initial drop-in animation */
+    @keyframes dropIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Keyframes for fading highlighting (for data update) */
+    @keyframes fadeIn {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+    /* When updated, the element briefly highlights with a green-ish tint */
+    .updated {
+      animation: fadeIn 0.5s ease-in-out;
+      background-color: #d4edda !important;
+    }
