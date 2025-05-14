@@ -3,24 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <title>Raspberry Pi System Monitor</title>
+  <style>
+    /* Overall page styling with a gradient background */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #333;
+    }
+    /* Container styling with drop-in animation */
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: dropIn 0.8s ease-out both;
+    }
+    /* Header title styling */
+    .container h1 {
+      margin-bottom: 20px;
+      font-size: 2em;
+      color: #333;
+    }
+    /* Individual statistic styling */
+    .stat {
+      font-size: 1.5em;
+      margin: 15px 0;
+      position: relative;
+    }
+    /* Styling each stat value */
+    .stat span.value {
+      font-weight: bold;
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      transition: background-color 0.5s ease-in-out;
+    }
+    /* Keyframes for the initial drop-in animation */
+    @keyframes dropIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* Keyframes for fading highlighting on updates */
+    @keyframes fadeIn {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+    /* Highlight element temporarily when updated */
+    .updated {
+      animation: fadeIn 0.5s ease-in-out;
+      background-color: #d4edda !important;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Raspberry Pi Stats</h1>
     <div class="stat">CPU Temperature: <span id="cpu_temp" class="value">Loading...</span> °C</div>
     <div class="stat">CPU Usage: <span id="cpu_usage" class="value">Loading...</span> %</div>
+
     <div class="stat">RAM Usage: <span id="ram_usage" class="value">Loading...</span> %</div>
+    <div class="stat">Memory Available: <span id="ram_available" class="value">Loading...</span></div>
+    <div class="stat">RAM Used/Total: <span id="ram_used_total" class="value">Loading...</span></div>
+
     <div class="stat">Disk Usage: <span id="disk_usage" class="value">Loading...</span> %</div>
+    <div class="stat">Disk Used/Total: <span id="disk_used_total" class="value">Loading...</span></div>
+
     <div class="stat">Last Updated: <span id="last_updated" class="value">Loading...</span></div>
   </div>
 
   <script>
-    // Function to animate updates by adding the "updated" class temporarily
+    // Animate any element update by adding a class that fades in the highlight.
     function animateUpdate(element) {
       element.classList.add("updated");
       setTimeout(() => {
         element.classList.remove("updated");
-      }, 500); // Animation lasts 500ms
+      }, 500);
     }
 
     async function fetchStats() {
@@ -28,7 +101,6 @@
         const response = await fetch('/api/stats/');
         const data = await response.json();
 
-        // For each stat element, update the text content and trigger the update animation if needed.
         const cpuTempElem = document.getElementById('cpu_temp');
         if (cpuTempElem.textContent !== data.cpu_temp) {
           cpuTempElem.textContent = data.cpu_temp;
@@ -36,21 +108,39 @@
         }
 
         const cpuUsageElem = document.getElementById('cpu_usage');
-        if (cpuUsageElem.textContent !== data.cpu_usage) {
+        if (cpuUsageElem.textContent !== data.cpu_usage.toString()) {
           cpuUsageElem.textContent = data.cpu_usage;
           animateUpdate(cpuUsageElem);
         }
 
         const ramUsageElem = document.getElementById('ram_usage');
-        if (ramUsageElem.textContent !== data.ram_usage) {
+        if (ramUsageElem.textContent !== data.ram_usage.toString()) {
           ramUsageElem.textContent = data.ram_usage;
           animateUpdate(ramUsageElem);
         }
 
+        const ramAvailElem = document.getElementById('ram_available');
+        if (ramAvailElem.textContent !== data.ram_available) {
+          ramAvailElem.textContent = data.ram_available;
+          animateUpdate(ramAvailElem);
+        }
+
+        const ramUsedTotalElem = document.getElementById('ram_used_total');
+        if (ramUsedTotalElem.textContent !== data.ram_used_total) {
+          ramUsedTotalElem.textContent = data.ram_used_total;
+          animateUpdate(ramUsedTotalElem);
+        }
+
         const diskUsageElem = document.getElementById('disk_usage');
-        if (diskUsageElem.textContent !== data.disk_usage) {
+        if (diskUsageElem.textContent !== data.disk_usage.toString()) {
           diskUsageElem.textContent = data.disk_usage;
           animateUpdate(diskUsageElem);
+        }
+
+        const diskUsedTotalElem = document.getElementById('disk_used_total');
+        if (diskUsedTotalElem.textContent !== data.disk_used_total) {
+          diskUsedTotalElem.textContent = data.disk_used_total;
+          animateUpdate(diskUsedTotalElem);
         }
 
         const lastUpdatedElem = document.getElementById('last_updated');
@@ -63,9 +153,9 @@
       }
     }
 
-    // Initial fetch then update every 5 seconds.
+    // Initial fetch and then schedule updates every 5 seconds.
     fetchStats();
-    setInterval(fetchStats, 10000);
+    setInterval(fetchStats, 5000);
   </script>
 </body>
 </html>
