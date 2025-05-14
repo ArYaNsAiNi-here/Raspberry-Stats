@@ -1,52 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Raspberry Pi System Monitor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 { text-align: center; }
-        p { font-size: 1.2em; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Raspberry Pi System Monitor</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Raspberry Pi Stats</h1>
-        <p>CPU Temperature: <span id="cpu_temp">Loading...</span> °C</p>
-        <p>CPU Usage: <span id="cpu_usage">Loading...</span> %</p>
-        <p>RAM Usage: <span id="ram_usage">Loading...</span> %</p>
-        <p>Disk Usage: <span id="disk_usage">Loading...</span> %</p>
-    </div>
-    <script>
-        async function fetchStats() {
-            try {
-                const response = await fetch('/api/stats/');
-                const data = await response.json();
+  <div class="container">
+    <h1>Raspberry Pi Stats</h1>
+    <div class="stat">CPU Temperature: <span id="cpu_temp" class="value">Loading...</span> °C</div>
+    <div class="stat">CPU Usage: <span id="cpu_usage" class="value">Loading...</span> %</div>
+    <div class="stat">RAM Usage: <span id="ram_usage" class="value">Loading...</span> %</div>
+    <div class="stat">Disk Usage: <span id="disk_usage" class="value">Loading...</span> %</div>
+    <div class="stat">Last Updated: <span id="last_updated" class="value">Loading...</span></div>
+  </div>
 
-                document.getElementById('cpu_temp').textContent = data.cpu_temp;
-                document.getElementById('cpu_usage').textContent = data.cpu_usage;
-                document.getElementById('ram_usage').textContent = data.ram_usage;
-                document.getElementById('disk_usage').textContent = data.disk_usage;
-            } catch (error) {
-                console.error('Error fetching system stats:', error);
-            }
+  <script>
+    // Function to animate updates by adding the "updated" class temporarily
+    function animateUpdate(element) {
+      element.classList.add("updated");
+      setTimeout(() => {
+        element.classList.remove("updated");
+      }, 500); // Animation lasts 500ms
+    }
+
+    async function fetchStats() {
+      try {
+        const response = await fetch('/api/stats/');
+        const data = await response.json();
+
+        // For each stat element, update the text content and trigger the update animation if needed.
+        const cpuTempElem = document.getElementById('cpu_temp');
+        if (cpuTempElem.textContent !== data.cpu_temp) {
+          cpuTempElem.textContent = data.cpu_temp;
+          animateUpdate(cpuTempElem);
         }
-        // Call the function immediately and then every 5 seconds:
-        fetchStats();
-        setInterval(fetchStats, 5000);
-    </script>
+
+        const cpuUsageElem = document.getElementById('cpu_usage');
+        if (cpuUsageElem.textContent !== data.cpu_usage) {
+          cpuUsageElem.textContent = data.cpu_usage;
+          animateUpdate(cpuUsageElem);
+        }
+
+        const ramUsageElem = document.getElementById('ram_usage');
+        if (ramUsageElem.textContent !== data.ram_usage) {
+          ramUsageElem.textContent = data.ram_usage;
+          animateUpdate(ramUsageElem);
+        }
+
+        const diskUsageElem = document.getElementById('disk_usage');
+        if (diskUsageElem.textContent !== data.disk_usage) {
+          diskUsageElem.textContent = data.disk_usage;
+          animateUpdate(diskUsageElem);
+        }
+
+        const lastUpdatedElem = document.getElementById('last_updated');
+        if (lastUpdatedElem.textContent !== data.last_updated) {
+          lastUpdatedElem.textContent = data.last_updated;
+          animateUpdate(lastUpdatedElem);
+        }
+      } catch (error) {
+        console.error('Error fetching system stats:', error);
+      }
+    }
+
+    // Initial fetch then update every 5 seconds.
+    fetchStats();
+    setInterval(fetchStats, 10000);
+  </script>
 </body>
 </html>
