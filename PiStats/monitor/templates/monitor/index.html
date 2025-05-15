@@ -84,6 +84,10 @@
     <div class="stat">Disk Usage: <span id="disk_usage" class="value">Loading...</span> %</div>
     <div class="stat">Disk Used/Total: <span id="disk_used_total" class="value">Loading...</span></div>
 
+<!--    <div class="stat">Download Speed: <span id="download_speed" class="value">Loading...</span></div>-->
+<!--    <div class="stat">Upload Speed: <span id="upload_speed" class="value">Loading...</span></div>-->
+<!--    <div class="stat">Ping: <span id="ping" class="value">Loading...</span></div>-->
+
     <div class="stat">Last Updated: <span id="last_updated" class="value">Loading...</span></div>
   </div>
 
@@ -143,6 +147,24 @@
           animateUpdate(diskUsedTotalElem);
         }
 
+        // const downloadSpeedElem = document.getElementById('download_speed');
+        // if (downloadSpeedElem.textContent !== data.download_speed) {
+        //     downloadSpeedElem.textContent = data.download_speed;
+        //     animateUpdate(downloadSpeedElem);
+        // }
+        //
+        // const uploadSpeedElem = document.getElementById('upload_speed');
+        // if (uploadSpeedElem.textContent !== data.upload_speed) {
+        //     uploadSpeedElem.textContent = data.upload_speed;
+        //     animateUpdate(uploadSpeedElem);
+        // }
+        //
+        // const pingElem = document.getElementById('ping');
+        // if (pingElem.textContent !== data.ping) {
+        //     pingElem.textContent = data.ping;
+        //     animateUpdate(pingElem);
+        // }
+
         const lastUpdatedElem = document.getElementById('last_updated');
         if (lastUpdatedElem.textContent !== data.last_updated) {
           lastUpdatedElem.textContent = data.last_updated;
@@ -155,7 +177,7 @@
 
     // Initial fetch and then schedule updates every 5 seconds.
     fetchStats();
-    setInterval(fetchStats, 30000);
+    setInterval(fetchStats, 5000);
   </script>
 </body>
 </html>
