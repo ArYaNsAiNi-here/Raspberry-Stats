@@ -1,7 +1,7 @@
 # monitor/views.py
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.utils import timezone
+from django.utils.timezone import localtime
 import psutil
 
 
@@ -37,6 +37,6 @@ def system_stats(request):
         'ram_used_total': f"{(vm.used / (1024 * 1024)):.2f} MB / {(vm.total / (1024 * 1024)):.2f} MB",
         'disk_usage': d.percent,  # Percentage of disk used
         'disk_used_total': f"{(d.used / (1024 ** 3)):.2f} GB / {(d.total / (1024 ** 3)):.2f} GB",
-        'last_updated': timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'last_updated': localtime().strftime("%Y-%m-%d %H:%M:%S"),
     }
     return JsonResponse(data)
